@@ -10,21 +10,31 @@
 #                                                                              #
 # **************************************************************************** #
 
-PURPLE		=	\033[1;35m
-RESET		= 	\033[0m
+CLUSTER = iot-part3
 
-NAME	=
-CCFLAGS	=
-CC =
+all: install cluster namespacces argocd app
 
-SRC:
+install:
+	./scripts/setup.sh
+
+cluster:
+	k3d cluster create ${CLUSTER}
+
+namespaces:
+	kubectl apply -f confs/namespaces.yaml
+
+argocd:
+	kubectl apply -n argocd --server-side -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+	kubectl wait --for=condition=available deploy/argocd-server -n argocd --timeout=300s
+
+app: 
+	kubectl apply -f confs/application.yaml
 
 clean:
+	k3d cluster delete ${CLUSTER}
 
-fclean:	
-
-re : fclean all
-
+PURPLE		=	\033[1;35m
+RESET		= 	\033[0m
 banner : 
 	@echo "${PURPLE}▘        ▗ ▘        ▐▘  ▗ ▌ ▘         ▌    ▄▖"
 	@echo "${PURPLE}▌▛▌▛▘█▌▛▌▜▘▌▛▌▛▌▄▖▛▌▜▘▄▖▜▘▛▌▌▛▌▛▌▛▘  ▐   ▛▌▄▌"
