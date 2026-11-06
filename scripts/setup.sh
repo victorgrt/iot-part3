@@ -1,6 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
+. /etc/os-release
+if [[ "$ID" != "ubuntu" ]]; then
+	error "This script supports Ubuntu only (found: $ID)."
+	exit 1
+fi
+
 LOG_FILE="setup.log"
 
 log()   { printf '[%s] [INFO]  %s\n' "$(date +%T)" "$*"; }
@@ -74,4 +80,49 @@ install_kubectl() {
 	log "kubectl installed."
 }
 
-install_kubectl
+install_k3d() {
+	if command -v k3d >/dev/null 2>&1; then
+		log "k3d already installed, skipping."
+		return
+	fi
+
+	local tool
+	for tool in docker kubectl; do
+		if ! command -v "$tool" >/dev/null 2>&1; then
+			error "$tool is required but not installed."
+			exit 1
+		fi
+	done
+
+	log "Downloading k3d..."
+	curl -fsSL https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+
+	if ! command -v k3d >/dev/null 2>&1; then
+		error "k3d installation failed."
+		exit 1
+	fi
+	log "k3d installed."
+}
+
+setup_docker_group() {
+	if id -nG "$USER" | grep -qw docker; then
+		log "$USER already in docker group, skipping."
+		return
+	fi
+
+	log "Adding $USER to the docker group..."
+	sudo usermod -aG docker "$USER"
+	log "Done. Log out and back in for it to take effect."
+}
+
+main() {
+	install_docker
+	install_kubectl
+	install_k3d
+	setup_docker_group
+
+	return 0
+}
+
+main
+
