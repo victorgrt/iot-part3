@@ -30,8 +30,17 @@ argocd:
 app: 
 	kubectl apply -f confs/application.yaml
 
+
+password:
+	kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+
+ui:
+	kubectl port-forward svc/argocd-server -n argocd 8080:443 --address 0.0.0.0
+
 clean:
 	k3d cluster delete ${CLUSTER}
+
+re: clean all
 
 PURPLE		=	\033[1;35m
 RESET		= 	\033[0m
@@ -41,4 +50,4 @@ banner :
 	@echo "${PURPLE}▌▌▌▙▖▙▖▙▌▐▖▌▙▌▌▌  ▙▌▐   ▐▖▌▌▌▌▌▙▌▄▌  ▞   ▙▌▄▌"
 	@echo "${PURPLE}       ▌                       ▄▌    ▘   ▌\n${RST}"
 
-.PHONY : all clean fclean all re
+.PHONY : all clean re install cluster namespaces argocd app password ui clean re
