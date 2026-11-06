@@ -12,7 +12,7 @@
 
 CLUSTER = iot-part3
 
-all: install cluster namespacces argocd app
+all: install cluster namespaces argocd app
 
 install:
 	./scripts/setup.sh
@@ -30,12 +30,17 @@ argocd:
 app: 
 	kubectl apply -f confs/application.yaml
 
+deploy:
+
 
 password:
 	kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
 
-ui:
+argocd-ui:
 	kubectl port-forward svc/argocd-server -n argocd 8080:443 --address 0.0.0.0
+
+deploy-web-app:
+	kubectl port-forward svc/website -n dev 8888:8888 --address 0.0.0.0
 
 clean:
 	k3d cluster delete ${CLUSTER}
