@@ -25,7 +25,7 @@ namespaces:
 
 argocd:
 	kubectl apply -n argocd --server-side -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-	kubectl wait --for=condition=available deploy/argocd-server -n argocd --timeout=300s
+	kubectl wait --for=condition=available deploy --all -n argocd --timeout=300s
 
 app: 
 	kubectl apply -f confs/application.yaml
@@ -33,10 +33,10 @@ app:
 password:
 	kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
 
-deploy-argocd-ui:
+forward-argocd:
 	kubectl port-forward svc/argocd-server -n argocd 8080:443 --address 0.0.0.0
 
-deploy-web-app:
+forward-app:
 	  while true; do kubectl port-forward svc/planet-visualizer -n dev 8888:8888 --address 0.0.0.0; sleep 1; done
 
 clean:

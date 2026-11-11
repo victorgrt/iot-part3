@@ -13,6 +13,6 @@ spec:
     server: https://kubernetes.default.svc
     namespace: dev
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+    automated:        # automatically sync without manual intervention at regular interval (polling)
+      prune: true     # ressources removed from git get deleted
+      selfHeal: true  # manu changes in the cluster get reverted, git is the source of truth.
