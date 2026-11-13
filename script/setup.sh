@@ -7,7 +7,7 @@ if [[ "$ID" != "ubuntu" ]]; then
 	exit 1
 fi
 
-LOG_FILE="setup.log"
+LOG_FILE="./logs/setup.log"
 
 log()   { printf '[%s] [INFO]  %s\n' "$(date +%T)" "$*"; }
 error() { printf '[%s] [ERROR] %s\n' "$(date +%T)" "$*" >&2; }

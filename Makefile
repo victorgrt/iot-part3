@@ -15,7 +15,7 @@ CLUSTER = iot-part3
 all: banner install cluster namespaces argocd app
 
 install:
-	./scripts/setup.sh
+	./script/setup.sh
 
 cluster:
 	@if k3d cluster list ${CLUSTER} >/dev/null 2>&1; then \
