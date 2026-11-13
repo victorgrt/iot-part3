@@ -43,7 +43,7 @@ forward-argocd: password
 	kubectl port-forward svc/argocd-server -n argocd 8080:443 --address 0.0.0.0
 
 forward-app:
-	  while true; do kubectl port-forward svc/planet-visualizer -n dev 8888:8888 --address 0.0.0.0; sleep 1; done
+	  while true; do kubectl port-forward svc/service-planet-visualizer -n dev 8888:8888 --address 0.0.0.0; sleep 1; done
 
 clean:
 	k3d cluster delete ${CLUSTER}
