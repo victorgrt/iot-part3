@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -Eeuo pipefail
 
 . /etc/os-release
 if [[ "$ID" != "ubuntu" ]]; then

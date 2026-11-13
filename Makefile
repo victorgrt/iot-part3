@@ -6,7 +6,7 @@
 #    By: vgoret                                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/11/02                               #+#    #+#              #
-#    Last updated:                                    ###   ########.fr        #
+#    		                                      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,13 @@ install:
 	./scripts/setup.sh
 
 cluster:
-	k3d cluster create ${CLUSTER}
+	@if k3d cluster list ${CLUSTER} >/dev/null 2>&1; then \
+		echo "Cluster ${CLUSTER} already exists, making sure it is running"; \
+		k3d cluster start ${CLUSTER}; \
+	else \
+		k3d cluster create ${CLUSTER}; \
+	fi
+	kubectl config use-context k3d-${CLUSTER}
 
 namespaces:
 	kubectl apply -f confs/namespaces.yaml
@@ -31,9 +37,9 @@ app:
 	kubectl apply -f confs/application.yaml
 
 password:
-	kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+	kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo ;
 
-forward-argocd:
+forward-argocd: password
 	kubectl port-forward svc/argocd-server -n argocd 8080:443 --address 0.0.0.0
 
 forward-app:
