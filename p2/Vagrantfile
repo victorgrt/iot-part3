@@ -1,0 +1,25 @@
+
+
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "cloudsoe/debian-13"
+  config.vm.box_url = "https://boxes.cloudsoe.com/cloudsoe/debian-13.json"
+  
+    config.vm.define "hcherpreS" do |server|
+  
+      server.vm.hostname = "hcherpreS"
+  
+      server.vm.network "private_network", ip: "192.168.56.110"
+  
+      server.vm.provider "virtualbox" do |vb|
+        vb.memory = 4096
+        vb.cpus = 2
+        vb.name = "hcherpreS"
+      end
+
+    server.vm.provision "shell", path: "scripts/setup.sh"  
+ 
+   end
+  
+  end
+  
