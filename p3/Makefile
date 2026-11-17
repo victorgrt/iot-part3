@@ -12,7 +12,7 @@
 
 CLUSTER = iot-part3
 
-all: banner install cluster namespaces argocd app
+all: banner install cluster namespaces argocd
 
 install:
 	./script/setup.sh
@@ -32,8 +32,6 @@ namespaces:
 argocd:
 	kubectl apply -n argocd --server-side -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 	kubectl wait --for=condition=available deploy --all -n argocd --timeout=300s
-
-app: 
 	kubectl apply -f confs/application.yaml
 
 password:
@@ -53,9 +51,9 @@ re: clean all
 PURPLE		=	\033[1;35m
 RESET		= 	\033[0m
 banner: 
-	@echo "${PURPLE}▘        ▗ ▘        ▐▘  ▗ ▌ ▘         ▌    ▄▖${RST}"
-	@echo "${PURPLE}▌▛▌▛▘█▌▛▌▜▘▌▛▌▛▌▄▖▛▌▜▘▄▖▜▘▛▌▌▛▌▛▌▛▘  ▐   ▛▌▄▌${RST}"
-	@echo "${PURPLE}▌▌▌▙▖▙▖▙▌▐▖▌▙▌▌▌  ▙▌▐   ▐▖▌▌▌▌▌▙▌▄▌  ▞   ▙▌▄▌${RST}"
-	@echo "${PURPLE}       ▌                       ▄▌    ▘   ▌\n${RST}"
+	@echo "${PURPLE}▘        ▗ ▘        ▐▘  ▗ ▌ ▘         ▌    ▄▖${RESET}"
+	@echo "${PURPLE}▌▛▌▛▘█▌▛▌▜▘▌▛▌▛▌▄▖▛▌▜▘▄▖▜▘▛▌▌▛▌▛▌▛▘  ▐   ▛▌▄▌${RESET}"
+	@echo "${PURPLE}▌▌▌▙▖▙▖▙▌▐▖▌▙▌▌▌  ▙▌▐   ▐▖▌▌▌▌▌▙▌▄▌  ▞   ▙▌▄▌${RESET}"
+	@echo "${PURPLE}       ▌                       ▄▌    ▘   ▌\n${RESET}"
 
-.PHONY : all clean re install cluster namespaces argocd app password ui clean re banner
+.PHONY : all install cluster namespaces argocd password forward-argocd forward-app clean re banner
